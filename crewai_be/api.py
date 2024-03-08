@@ -19,7 +19,7 @@ def append_event(job_id, event_details):
             jobs[job_id] = {'status': 'STARTED', 'events': [event_details]}
 
 
-def kickoff_crew(job_id, video_topic, video_details):
+def kickoff_crew(job_id, company_name: str, postions: list[str], additional_details: str):
     append_event(job_id, {
         'time': str(datetime.datetime.now().time()),
         'details': 'Kickoff started'
