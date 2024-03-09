@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "automate-youtube-with-crewai"
+name = "nextjs-crewai-tutorial"
 version = "0.1.0"
 description = "Automate YouTube tasks with CrewAI"
 authors = ["bhancock_ai <brandon@brandonhancock.io>", "João Moura <joaomdmoura@mgail.com>"]
