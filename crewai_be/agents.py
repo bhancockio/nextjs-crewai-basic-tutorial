@@ -1,3 +1,4 @@
+from typing import List
 from crewai import Agent
 from crewai_tools import ScrapeWebsiteTool
 
@@ -7,7 +8,7 @@ class CompanyResearchAgents():
     def __init__(self):
         self.scrapeWebsiteTool = ScrapeWebsiteTool()
 
-    def research_manager(self, companies, positions, additional_details):
+    def research_manager(self, companies: List[str], positions: List[str], additional_details: str) -> Agent:
         return Agent(
             role="Company Research Manager",
             goal=f"""For each company in the list {companies}, research the specified positions {positions} 
@@ -19,7 +20,7 @@ class CompanyResearchAgents():
             allow_delegation=True,
         )
 
-    def company_research_agent(self):
+    def company_research_agent(self) -> Agent:
         return Agent(
             role="Company Research Agent",
             goal="""Look up the specific positions for a given company and gather information such as name, 

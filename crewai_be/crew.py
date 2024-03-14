@@ -5,52 +5,48 @@ from agents import CompanyResearchAgents
 from tasks import CompanyResearchTasks
 from crewai import Crew, Process
 
-from dotenv import load_dotenv
-load_dotenv()
-
 
 class CompanyResearchCrew:
-    def __init__(self, job_id: str, append_event: Callable[[str, str], None], companies: list[str], positions: list[str], additional_details: str):
+    def __init__(self, job_id: str, append_event: Callable[[str, str], None]):
         self.job_id = job_id
         self.append_event = append_event
-        self.companies = companies
-        self.positions = positions
-        self.additional_details = additional_details
+        self.crew = None
+        self.manager_llm = ChatOpenAI(model="gpt-4-turbo-preview")
 
-        self.manager_llm = ChatOpenAI(
-            model="gpt-4-turbo-preview"
-        )
-
+    def setup_crew(self, companies: list[str], positions: list[str], additional_details: str):
         agents = CompanyResearchAgents()
         tasks = CompanyResearchTasks(
             append_event=self.append_event, job_id=self.job_id)
 
-        # Define agents
-        self.research_manager = agents.research_manager(
+        research_manager = agents.research_manager(
             companies, positions, additional_details)
-        self.company_research_agent = agents.company_research_agent()
+        company_research_agent = agents.company_research_agent()
 
-        # Define tasks
-        company_research_tasks = []
-        for company in companies:
-            company_research_tasks.append(
-                tasks.company_research(
-                    self.company_research_agent, company, positions)
-            )
+        company_research_tasks = [
+            tasks.company_research(company_research_agent, company, positions)
+            for company in companies
+        ]
 
-        self.manage_research_task = tasks.manage_research(
-            self.research_manager, companies, positions, additional_details)
+        manage_research_task = tasks.manage_research(
+            research_manager, companies, positions, additional_details)
 
-        # Setup Crew
         self.crew = Crew(
-            agents=[self.research_manager, self.company_research_agent],
-            tasks=[self.manage_research_task, *company_research_tasks],
+            agents=[research_manager, company_research_agent],
+            tasks=[manage_research_task, *company_research_tasks],
             process=Process.hierarchical,
             manager_llm=self.manager_llm
         )
 
     def kickoff(self):
+        if not self.crew:
+            self.append_event(self.job_id, "Crew not set up")
+            return "Crew not set up"
+
         self.append_event(self.job_id, "Task Started")
-        results = self.crew.kickoff()
-        self.append_event(self.job_id, "Task Complete")
-        return results
+        try:
+            results = self.crew.kickoff()
+            self.append_event(self.job_id, "Task Complete")
+            return results
+        except Exception as e:
+            self.append_event(self.job_id, f"An error occurred: {e}")
+            return str(e)

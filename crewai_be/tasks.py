@@ -1,6 +1,7 @@
-import logging
 from crewai import Task, Agent
 from textwrap import dedent
+
+from utils.logging import logger
 
 
 class CompanyResearchTasks():
@@ -8,10 +9,9 @@ class CompanyResearchTasks():
     def __init__(self, append_event, job_id):
         self.append_event = append_event
         self.job_id = job_id
-        self.logger = logging.getLogger(__name__)
 
     def append_event_callback(self, task_output):
-        self.logger.info("Callback called: %s", task_output)
+        logger.info("Callback called: %s", task_output)
         self.append_event(self.job_id, task_output.exported_output)
 
     def manage_research(self, agent: Agent, companies: list[str], positions: list[str], additional_details: str):
