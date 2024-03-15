@@ -1,33 +1,48 @@
 from typing import List
 from crewai import Agent
-from crewai_tools import ScrapeWebsiteTool
+from langchain_openai import ChatOpenAI
+from tools.minimal_web_scrapper import ScrapeWebsiteTool
 
 
 class CompanyResearchAgents():
 
     def __init__(self):
         self.scrapeWebsiteTool = ScrapeWebsiteTool()
+        self.llm = ChatOpenAI(model="gpt-4-turbo-preview")
 
-    def research_manager(self, companies: List[str], positions: List[str], additional_details: str) -> Agent:
+    def research_manager(self, companies: List[str], positions: List[str]) -> Agent:
         return Agent(
             role="Company Research Manager",
-            goal=f"""For each company in the list {companies}, research the specified positions {positions} 
-                and gather information as per the additional details: {additional_details}.""",
-            backstory="""As a Company Research Manager, you are responsible for overseeing the research process 
-                to gather information on specific positions within a list of companies. You delegate tasks to 
-                the Company Research Agent to look up each position for one company at a time.""",
+            goal=f"""Generate a markdown report containing the researched information for each position in each company.
+             
+                Companies: {companies}
+                Positions: {positions}
+
+                Important:
+                - The final report must include all companies and positions. Do not leave any out.
+                - If you can't find information for a specific position, fill in the information with the word "MISSING".
+                """,
+            backstory="""As a Company Research Manager, you are responsible for aggregating all the researched information
+                into a markdown report.""",
+            llm=self.llm,
             verbose=True,
             allow_delegation=True,
+            max_iter=7
         )
 
     def company_research_agent(self) -> Agent:
         return Agent(
             role="Company Research Agent",
-            goal="""Look up the specific positions for a given company and gather information such as name, 
-                email, and LinkedIn profile. It is your job to return this collected information in a 
+            goal="""Look up the specific positions for a given company and the person's name, 
+                public business email, and LinkedIn URL. It is your job to return this collected information in a 
                 bulleted list""",
             backstory="""As a Company Research Agent, you are responsible for looking up specific positions 
-                within a company and gathering relevant information.""",
+                within a company and gathering relevant information.
+                
+                Important:
+                - Once you've found the information, immediately stop searching for additional information.
+                - Only return the requested information. NOTHING ELSE!""",
             tools=[self.scrapeWebsiteTool],
+            llm=self.llm,
             verbose=True
         )

@@ -18,19 +18,16 @@ load_dotenv()
 app = Flask(__name__)
 
 
-def kickoff_crew(job_id, companies: list[str], positions: list[str], additional_details: str):
+def kickoff_crew(job_id, companies: list[str], positions: list[str]):
     logger.info(f"Crew for job {job_id} is starting")
 
     results = None
     try:
         company_research_crew = CompanyResearchCrew(job_id, append_event)
         company_research_crew.setup_crew(
-            companies, positions, additional_details)
+            companies, positions)
         results = company_research_crew.kickoff()
-
-        with jobs_lock:
-            jobs[job_id].result = results
-            jobs[job_id].status = 'COMPLETE'
+        logger.info(f"Crew for job {job_id} is complete", results)
 
     except Exception as e:
         logger.error(f"Error in kickoff_crew for job {job_id}: {e}")
@@ -59,7 +56,7 @@ def run_crew():
     positions = data['positions']
 
     thread = Thread(target=kickoff_crew, args=(
-        job_id, companies, positions, "Find the name, email, and linkedin profile for each position in each company."))
+        job_id, companies, positions))
     thread.start()
 
     return jsonify({"job_id": job_id}), 202
