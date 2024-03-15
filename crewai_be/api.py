@@ -48,6 +48,7 @@ def kickoff_crew(job_id, companies: list[str], positions: list[str], additional_
 
 @app.route('/api/crew', methods=['POST'])
 def run_crew():
+    logger.info("Received request to run crew")
     # Validation
     data = request.json
     if not data or 'companies' not in data or 'positions' not in data:

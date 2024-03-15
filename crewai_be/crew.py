@@ -16,7 +16,8 @@ class CompanyResearchCrew:
     def setup_crew(self, companies: list[str], positions: list[str], additional_details: str):
         agents = CompanyResearchAgents()
         tasks = CompanyResearchTasks(
-            append_event=self.append_event, job_id=self.job_id)
+            append_event=self.append_event,
+            job_id=self.job_id)
 
         research_manager = agents.research_manager(
             companies, positions, additional_details)
@@ -28,7 +29,7 @@ class CompanyResearchCrew:
         ]
 
         manage_research_task = tasks.manage_research(
-            research_manager, companies, positions, additional_details)
+            research_manager, companies, positions, company_research_tasks)
 
         self.crew = Crew(
             agents=[research_manager, company_research_agent],
