@@ -43,6 +43,7 @@ export const FinalOutput: React.FC<FinalOutputProps> = ({
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="text-green-500 underline"
                           >
                             {url}
                           </a>
