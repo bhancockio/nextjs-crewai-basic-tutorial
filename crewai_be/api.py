@@ -73,11 +73,15 @@ def get_status(job_id):
 
     # Strip markdown backticks and parse the JSON string
     try:
-        # Use regex to find JSON object inside the string
-        json_str = re.search(r'```json\n(.+)\n```',
-                             job.result, re.DOTALL).group(1)
-        # Convert the JSON string to a Python dictionary
-        result_obj = json.loads(json_str)
+        print(job.result)
+        if job.status == "COMPLETE":
+            # Use regex to find JSON object inside the string
+            json_str = re.search(r'```json\n(.+)\n```',
+                                 job.result, re.DOTALL).group(1)
+            # Convert the JSON string to a Python dictionary
+            result_obj = json.loads(json_str)
+        else:
+            result_obj = ""
     except (AttributeError, json.JSONDecodeError) as e:
         # Handle cases where result is not in the expected format
         result_obj = "Invalid format or content for job results"

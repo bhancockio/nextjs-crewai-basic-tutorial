@@ -8,6 +8,7 @@ class NamedUrl(BaseModel):
 
 
 class PositionInfo(BaseModel):
+    company: str
     position: str
     name: str
     blog_articles_urls: str
