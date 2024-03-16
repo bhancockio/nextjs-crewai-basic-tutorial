@@ -43,7 +43,7 @@ export const useCrewJob = () => {
           status: string;
           result: { positions: PositionInfo[] };
           events: EventType[];
-        }>(`/api/crew?jobId=${currentJobId}`);
+        }>(`http://localhost:3001/api/crew/${currentJobId}`);
         const { status, events: fetchedEvents, result } = response.data;
 
         console.log("status update", response.data);
@@ -90,15 +90,18 @@ export const useCrewJob = () => {
     setRunning(true);
 
     try {
-      const response = await axios.post<{ jobId: string }>("/api/crew", {
-        companies,
-        positions,
-      });
+      const response = await axios.post<{ job_id: string }>(
+        "http://localhost:3001/api/crew",
+        {
+          companies,
+          positions,
+        }
+      );
 
       toast.success("Job started");
 
-      console.log("jobId", response.data.jobId);
-      setCurrentJobId(response.data.jobId);
+      console.log("jobId", response.data.job_id);
+      setCurrentJobId(response.data.job_id);
     } catch (error) {
       toast.error("Failed to start job");
       console.error(error);

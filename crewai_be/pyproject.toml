@@ -11,6 +11,7 @@ pydantic = "^2.6.3"
 load-dotenv = "^0.1.0"
 crewai-tools = "^0.0.15"
 flask = "^3.0.2"
+flask-cors = "^4.0.0"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

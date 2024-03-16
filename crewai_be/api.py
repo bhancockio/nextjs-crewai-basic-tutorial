@@ -1,12 +1,12 @@
 # Standard library imports
 from datetime import datetime
 import json
-import re
-from threading import Thread, Lock
+from threading import Thread
 from uuid import uuid4
 
 # Related third-party imports
 from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 # Local application/library specific imports
@@ -18,6 +18,7 @@ from utils.logging import logger
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 def kickoff_crew(job_id, companies: list[str], positions: list[str]):
@@ -77,8 +78,6 @@ def get_status(job_id):
     except json.JSONDecodeError:
         # If parsing fails, set result_json to the original job.result string
         result_json = job.result
-
-    print(result_json)
 
     return jsonify({
         "job_id": job_id,
