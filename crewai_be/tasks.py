@@ -2,8 +2,7 @@ from crewai import Task, Agent
 from textwrap import dedent
 
 
-from models import PositionInfo
-from model_factory import create_company_info_list_model
+from models import PositionInfo, PositionInfoList
 from utils.logging import logger
 
 
@@ -18,7 +17,6 @@ class CompanyResearchTasks():
         self.append_event(self.job_id, task_output.exported_output)
 
     def manage_research(self, agent: Agent, companies: list[str], positions: list[str], tasks: list[Task]):
-        model = create_company_info_list_model(len(companies))
         return Task(
             description=dedent(f"""Based on the list of companies {companies} and the positions {positions},
                 use the results from the Company Research Agent to research each position in each company.
@@ -32,13 +30,15 @@ class CompanyResearchTasks():
                     titles for 3 YouTube interviews for each position in each company."""),
             callback=self.append_event_callback,
             context=tasks,
-            output_json=model
+            output_json=PositionInfoList
         )
 
     def company_research(self, agent: Agent, company: str, positions: list[str]):
         return Task(
             description=dedent(f"""Research the position {positions} for the {company} company. 
-                For each position, find the URLs for 3 recent blog articles and the URLs and titles for
+                For each position, 
+                               
+                               nd the URLs for 3 recent blog articles and the URLs and titles for
                 3 recent YouTube interviews for the person in each position.
                 Return this collected information in a JSON object.
                                

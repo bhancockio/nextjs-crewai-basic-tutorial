@@ -71,26 +71,19 @@ def get_status(job_id):
         if job is None:
             abort(404, description="Job not found")
 
-    # Strip markdown backticks and parse the JSON string
+     # Parse the job.result string into a JSON object
     try:
-        print(job.result)
-        if job.status == "COMPLETE":
-            # Use regex to find JSON object inside the string
-            json_str = re.search(r'```json\n(.+)\n```',
-                                 job.result, re.DOTALL).group(1)
-            # Convert the JSON string to a Python dictionary
-            result_obj = json.loads(json_str)
-        else:
-            result_obj = ""
-    except (AttributeError, json.JSONDecodeError) as e:
-        # Handle cases where result is not in the expected format
-        result_obj = "Invalid format or content for job results"
-        # You might want to log this error or handle it differently depending on your needs
+        result_json = json.loads(job.result)
+    except json.JSONDecodeError:
+        # If parsing fails, set result_json to the original job.result string
+        result_json = job.result
+
+    print(result_json)
 
     return jsonify({
         "job_id": job_id,
         "status": job.status,
-        "result": result_obj,
+        "result": result_json,
         "events": [{"timestamp": event.timestamp.isoformat(), "data": event.data} for event in job.events]
     })
 

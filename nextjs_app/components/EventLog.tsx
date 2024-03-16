@@ -1,9 +1,10 @@
 import React from "react";
 import { Event } from "../types";
+import { EventType } from "@/hooks/useCrewJob";
 
 // This component will receive props to update events.
 type EventLogProps = {
-  events: Event[];
+  events: EventType[];
 };
 
 export const EventLog: React.FC<EventLogProps> = ({ events }) => {

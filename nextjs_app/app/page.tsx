@@ -3,35 +3,42 @@
 import { EventLog } from "@/components/EventLog";
 import { FinalOutput } from "@/components/FinalOutput";
 import InputSection from "@/components/InputSection";
-import { useState } from "react";
-import { Event } from "../types";
+import { useCrewJob } from "@/hooks/useCrewJob";
 
 export default function Home() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [markdownOutput, setMarkdownOutput] = useState<string>("");
-
-  const startJob = () => {};
+  // Hooks
+  const crewJob = useCrewJob();
 
   return (
     <div className="bg-white min-h-screen text-black">
       <div className="flex">
         <div className="w-1/2 p-4">
-          <InputSection title="Companies" placeholder="Add a company" />
-          <InputSection title="Positions" placeholder="Add a position" />
-          <InputSection title="Info to Gather" placeholder="Add info" />
+          <InputSection
+            title="Companies"
+            placeholder="Add a company"
+            data={crewJob.companies}
+            setData={crewJob.setCompanies}
+          />
+          <InputSection
+            title="Positions"
+            placeholder="Add a position"
+            data={crewJob.positions}
+            setData={crewJob.setPositions}
+          />
         </div>
         <div className="w-1/2 p-4 flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Output</h2>
             <button
-              onClick={startJob}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
+              onClick={() => crewJob.startJob()}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+              disabled={crewJob.running}
             >
-              Run
+              {crewJob.running ? "Running..." : "Start"}
             </button>
           </div>
-          <EventLog events={events} />
-          <FinalOutput markdown={markdownOutput} />
+          <FinalOutput positionInfoList={crewJob.positionInfoList} />
+          <EventLog events={crewJob.events} />
         </div>
       </div>
     </div>

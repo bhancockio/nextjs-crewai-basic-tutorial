@@ -27,6 +27,7 @@ class CompanyResearchAgents():
                 - Do not generate fake information. Only return the information you find. Nothing else!
                 - Do not stop researching until you find the requested information for each position in each company.
                 - All the companies and positions exist so keep researching until you find the information for each one.
+                - Make sure you each researched position for each company contains 3 blog articles and 3 YouTube interviews.
                 """,
             backstory="""As a Company Research Manager, you are responsible for aggregating all the researched information
                 into a list.""",
@@ -48,6 +49,7 @@ class CompanyResearchAgents():
                 Important:
                 - Once you've found the information, immediately stop searching for additional information.
                 - Only return the requested information. NOTHING ELSE!
+                - Make sure you find the persons name who holds the position.
                 - Do not generate fake information. Only return the information you find. Nothing else!
                 """,
             tools=[self.searchInternetTool, self.youtubeSearchTool],

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from pydantic import BaseModel
 
 
@@ -11,10 +11,9 @@ class PositionInfo(BaseModel):
     company: str
     position: str
     name: str
-    blog_articles_urls: str
+    blog_articles_urls: List[str]
     youtube_interviews_urls: List[NamedUrl]
 
 
-class CompanyInfo(BaseModel):
-    company: str
+class PositionInfoList(BaseModel):
     positions: List[PositionInfo]

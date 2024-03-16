@@ -1,28 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 type InputSectionProps = {
   title: string;
   placeholder: string;
+  data: string[];
+  setData: Dispatch<SetStateAction<string[]>>;
 };
 
 export default function InputSection({
   title,
   placeholder,
+  setData,
+  data,
 }: InputSectionProps) {
-  const [items, setItems] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleAddClick = () => {
     if (inputValue.trim() !== "") {
-      setItems((prevItems) => [...prevItems, inputValue]);
+      setData((prevItems) => [...prevItems, inputValue]);
       setInputValue("");
     }
   };
 
   const handleRemoveItem = (index: number) => {
-    setItems(items.filter((_, i) => i !== index));
+    setData(data.filter((_, i) => i !== index));
   };
 
   return (
@@ -38,13 +41,13 @@ export default function InputSection({
         />
         <button
           onClick={handleAddClick}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         >
           Add
         </button>
       </div>
       <ul className="mt-2">
-        {items.map((item, index) => (
+        {data.map((item, index) => (
           <li
             key={index}
             className="flex items-center justify-between p-2 border-b border-gray-300"
