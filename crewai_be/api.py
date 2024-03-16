@@ -1,5 +1,7 @@
 # Standard library imports
 from datetime import datetime
+import json
+import re
 from threading import Thread, Lock
 from uuid import uuid4
 
@@ -69,10 +71,22 @@ def get_status(job_id):
         if job is None:
             abort(404, description="Job not found")
 
+    # Strip markdown backticks and parse the JSON string
+    try:
+        # Use regex to find JSON object inside the string
+        json_str = re.search(r'```json\n(.+)\n```',
+                             job.result, re.DOTALL).group(1)
+        # Convert the JSON string to a Python dictionary
+        result_obj = json.loads(json_str)
+    except (AttributeError, json.JSONDecodeError) as e:
+        # Handle cases where result is not in the expected format
+        result_obj = "Invalid format or content for job results"
+        # You might want to log this error or handle it differently depending on your needs
+
     return jsonify({
         "job_id": job_id,
         "status": job.status,
-        "result": job.result,
+        "result": result_obj,
         "events": [{"timestamp": event.timestamp.isoformat(), "data": event.data} for event in job.events]
     })
 

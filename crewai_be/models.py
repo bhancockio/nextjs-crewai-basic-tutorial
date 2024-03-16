@@ -10,9 +10,8 @@ class NamedUrl(BaseModel):
 class PositionInfo(BaseModel):
     position: str
     name: str
-    blog_articles_urls: List[NamedUrl]
+    blog_articles_urls: str
     youtube_interviews_urls: List[NamedUrl]
-    picture_url: Optional[str]
 
 
 class CompanyInfo(BaseModel):

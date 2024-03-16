@@ -1,5 +1,5 @@
 from typing import List, Type
-from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel, Field
 import os
 import requests
 from crewai_tools import BaseTool

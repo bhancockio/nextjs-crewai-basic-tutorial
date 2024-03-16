@@ -22,16 +22,14 @@ class CompanyResearchTasks():
         return Task(
             description=dedent(f"""Based on the list of companies {companies} and the positions {positions},
                 use the results from the Company Research Agent to research each position in each company.
-                to put together a report containing the URLs and titles for 3 blog articles, 3 YouTube interviews, 
-                and a URL to a picture of the person for each position in each company.
+                to put together a json object containing the URLs for 3 blog articles, the URLs and title 
+                for 3 YouTube interviews for each position in each company.
                                
-                Important:
-                - The persons name and linkedin are public information, but the email is not always public.
-                    So keep searching until you find the name and email.
                 """),
             agent=agent,
             expected_output=dedent(
-                "A report containing the URLs and titles for 3 blog articles, 3 YouTube interviews, and a URL to a picture of the person for each position in each company."),
+                """A json object containing the URLs for 3 blog articles and the URLs and 
+                    titles for 3 YouTube interviews for each position in each company."""),
             callback=self.append_event_callback,
             context=tasks,
             output_json=model
@@ -40,13 +38,13 @@ class CompanyResearchTasks():
     def company_research(self, agent: Agent, company: str, positions: list[str]):
         return Task(
             description=dedent(f"""Research the position {positions} for the {company} company. 
-                For each position, find the URLs and titles for 3 blog articles, 3 YouTube interviews, and a URL to a picture of the person.
+                For each position, find the URLs for 3 recent blog articles and the URLs and titles for
+                3 recent YouTube interviews for the person in each position.
                 Return this collected information in a JSON object.
                                
                 Helpful Tips:
-                - To find the blog article and picture URLs, perform searches on Google such like the following:
+                - To find the blog articles names and URLs, perform searches on Google such like the following:
                     - "{company} [POSITION HERE] blog articles"
-                    - "{company} [POSITION HERE] picture"
                 - To find the youtube interviews, perform searches on YouTube such as the following:
                     - "{company} [POSITION HERE] interview"
                                
@@ -54,9 +52,11 @@ class CompanyResearchTasks():
                 - Once you've found the information, immediately stop searching for additional information.
                 - Only return the requested information. NOTHING ELSE!
                 - Do not generate fake information. Only return the information you find. Nothing else!
+                - Do not stop researching until you find the requested information for each position in the company.
                 """),
             agent=agent,
             expected_output="""A JSON object containing the researched information for each position in the company.""",
             callback=self.append_event_callback,
             output_json=PositionInfo,
+            async_execution=True
         )
