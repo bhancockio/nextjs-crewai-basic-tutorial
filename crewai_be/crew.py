@@ -3,7 +3,7 @@ from typing import Callable
 from langchain_openai import ChatOpenAI
 from agents import CompanyResearchAgents
 from tasks import CompanyResearchTasks
-from crewai import Crew
+from crewai import Crew, Process
 
 
 class CompanyResearchCrew:
@@ -11,6 +11,7 @@ class CompanyResearchCrew:
         self.job_id = job_id
         self.append_event = append_event
         self.crew = None
+        self.llm = ChatOpenAI(model="gpt-4-turbo-preview")
 
     def setup_crew(self, companies: list[str], positions: list[str]):
         agents = CompanyResearchAgents()
@@ -32,7 +33,8 @@ class CompanyResearchCrew:
 
         self.crew = Crew(
             agents=[research_manager, company_research_agent],
-            tasks=[manage_research_task, *company_research_tasks],
+            tasks=[*company_research_tasks, manage_research_task],
+            verbose=2,
         )
 
     def kickoff(self):
