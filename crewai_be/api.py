@@ -26,7 +26,7 @@ def kickoff_crew(job_id, companies: list[str], positions: list[str]):
 
     results = None
     try:
-        company_research_crew = CompanyResearchCrew(job_id, append_event)
+        company_research_crew = CompanyResearchCrew(job_id)
         company_research_crew.setup_crew(
             companies, positions)
         results = company_research_crew.kickoff()

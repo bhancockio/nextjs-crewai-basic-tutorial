@@ -18,7 +18,7 @@ export const EventLog: React.FC<EventLogProps> = ({ events }) => {
           events.map((event, index) => (
             <div key={index} className="p-2 border-b border-gray-200">
               <p>
-                {event.timestamp.toLocaleString()}: {event.data}
+                {event.timestamp}: {event.data}
               </p>
             </div>
           ))
